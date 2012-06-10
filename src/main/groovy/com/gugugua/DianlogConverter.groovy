@@ -3,7 +3,7 @@ package com.gugugua
 
 
 /**
- * @author cairne huangyihua@diandian.com
+ * @author cairne flashsword20@gmail.com
  * @date 2012-6-10
  */
 class DianlogConverter {
