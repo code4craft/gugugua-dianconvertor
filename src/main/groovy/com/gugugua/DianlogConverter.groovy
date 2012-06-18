@@ -2,6 +2,7 @@ package com.gugugua
 
 
 
+
 /**
  * @author cairne huangyihua@diandian.com
  * @date 2012-6-10
@@ -9,7 +10,8 @@ package com.gugugua
 class DianlogConverter {
     public static void main(String[] args) {
         if (!args){
-            println "arguments [input dianlog backup file] [output wordpress xml file]";
+            println "Usage: java -cp groovy.jar:dianlog-convertor.jar com.gugugua.DianlogConverter [input dianlog backup file] [output wordpress xml file]";
+            println "Or: groovy DianlogConverter [input dianlog backup file] [output wordpress xml file]";
             System.exit(0)
         }
         def dianlogBackup=new XmlSlurper().parse(new File(args[0]));
@@ -50,10 +52,27 @@ class DianlogConverter {
 
     <generator>http://wordpress.org/?v=3.3.1</generator>
 """);
+        def images = [:]
+        //handle images
+        dianlogBackup.Images.Image.each{
+            images[it.Id.toString()]=it.Url.toString();
+        }
         dianlogBackup.Posts.Post.each{
             def pubDate = new Date(it.CreateTime.toLong()).format("EEE, d MMM yyyy HH:mm:ss Z");
             def postDate = new Date(it.CreateTime.toLong()).format("yyyy-MM-dd HH:mm:ss");
             def tags ="";
+            def matcher=it.Text.toString()=~/(<img\s*id=\"[^\"]+\")/;
+            def text=new RegexReplacer(matcher).replace{
+                def id=it=~/id=\"([^\"]+)\"/;
+                id.find();
+                def src=images[id.group(1)];
+                if (src!=null){
+                    return "<img src=\"$src\""
+                }else {
+                    return it;
+                }
+            }
+
             it.Tags.Tag.each{ tags+="""<category domain="post_tag" nicename="$it"><![CDATA[$it]]></category>\n"""; }
             def wpitem="""
         <item>
@@ -63,7 +82,7 @@ class DianlogConverter {
         <dc:creator>admin</dc:creator>
         <guid isPermaLink="false">http://127.0.0.1/wordpress/?p=$it.Id</guid>
         <description></description>
-        <content:encoded><![CDATA[$it.Text]]></content:encoded>
+        <content:encoded><![CDATA[$text]]></content:encoded>
         <excerpt:encoded><![CDATA[]]></excerpt:encoded>
         <wp:post_id>$it.Id</wp:post_id>
         <wp:post_date>$postDate</wp:post_date>
