@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.gugugua</groupId>
+  <artifactId>dianlog-convertor</artifactId>
+  <version>0.2</version>
+  <packaging>jar</packaging>
+  <name>dianlog-convertor</name>
+  <description>this is a tool to export diandian backup file to wordpress xml</description>
+  <dependencies>
+	
+  	<dependency>
+  		<groupId>org.codehaus.groovy.maven.runtime</groupId>
+  		<artifactId>gmaven-runtime-default</artifactId>
+  		<version>1.0-rc-3</version>
+  	</dependency>
+  </dependencies>
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>gmaven-plugin</artifactId>
+            <configuration>  
+                    <archive>  
+                        <manifest>  
+                            <mainClass>com.gugugua.DianlogConverter</mainClass>  
+                        </manifest>  
+                    </archive>  
+            </configuration> 
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>generateStubs</goal>
+                        <goal>compile</goal>
+                        <goal>generateTestStubs</goal>
+                        <goal>testCompile</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+</project>
